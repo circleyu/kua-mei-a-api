@@ -41,6 +41,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/crawler", crawlerHandler)
 
+	r.GET("/", homePageHandler)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -49,4 +50,7 @@ func main() {
 	log.Printf("listen on port %s", port)
 	err := r.Run(":" + port)
 	panic(err)
+}
+func homePageHandler(c *gin.Context) {
+	c.String(200, "Hello, World!")
 }
