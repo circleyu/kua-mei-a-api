@@ -1,7 +1,7 @@
 # https://cloud.google.com/appengine/docs/flexible/python/scheduling-jobs-with-cron-yaml
 cron:
-  - description: 'send daily beauty email'
-    url: /publish
+  - description: 'crawler daily beauty images'
+    url: /crawler
     timezone: Asia/Taipei
     schedule: every day 23:00
     retry_parameters:
