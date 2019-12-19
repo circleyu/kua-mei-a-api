@@ -9,10 +9,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbName = "kua-mei-a"
-)
-
 var engine *xorm.Engine
 
 func init() {
@@ -23,10 +19,8 @@ func init() {
 }
 
 func getDBEngine() error {
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbName)
-	//格式
 	var err error
-	engine, err = xorm.NewEngine("postgres", psqlInfo)
+	engine, err = xorm.NewEngine("postgres", datastoreName)
 	if err != nil {
 		return err
 	}
@@ -78,7 +72,7 @@ func SessionInsert(images []*model.ImageData) bool {
 
 // Insert 添加
 func Insert(image *model.ImageData) bool {
-	rows, err := engine.Insert(user)
+	rows, err := engine.Insert(image)
 	if err != nil {
 		log.Println(err)
 		return false
