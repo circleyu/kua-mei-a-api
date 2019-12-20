@@ -5,14 +5,13 @@ import (
 	"kua-mei-a-api/model"
 	"kua-mei-a-api/ptt"
 	"log"
+	"math/rand"
+	"net/http"
 	"os"
-
-	"github.com/gin-gonic/gin"
 )
 
 func startDailyBeautyCrawler() {
 	log.Println("getting daily beauty...")
-	// TODO: do parallelly
 	beauties, err := ptt.FetchBeauties()
 	if err != nil {
 		panic(err)
@@ -33,24 +32,45 @@ func startDailyBeautyCrawler() {
 	db.SessionInsert(imageURLs)
 	log.Println("Finish")
 }
-func crawlerHandler(c *gin.Context) {
-	startDailyBeautyCrawler()
-	c.String(200, "Crawler successfully")
-}
-func main() {
-	r := gin.Default()
-	r.GET("/crawler", crawlerHandler)
 
-	r.GET("/", homePageHandler)
+func getRandomImageURL() (string, error) {
+	count, err := db.Count()
+	if err != nil {
+		return "", err
+	}
+	id := rand.Int63n(count) + 1
+	img := db.SelectOne(id)
+	return img.URL, nil
+}
+
+func getImageHandler(w http.ResponseWriter, r *http.Request) {
+	url, err := getRandomImageURL()
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.Write([]byte(url))
+}
+
+func crawlerHandler(w http.ResponseWriter, r *http.Request) {
+	startDailyBeautyCrawler()
+	w.Write([]byte(`Crawler successfully`))
+}
+
+func homePageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`Hello, World!`))
+}
+
+func main() {
+	http.HandleFunc("/crawler", crawlerHandler)
+	http.HandleFunc("/image", getImageHandler)
+	http.HandleFunc("/", homePageHandler)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
 	log.Printf("listen on port %s", port)
-	err := r.Run(":" + port)
-	panic(err)
-}
-func homePageHandler(c *gin.Context) {
-	c.String(200, "Hello, World!")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
