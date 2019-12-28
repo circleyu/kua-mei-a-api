@@ -59,9 +59,9 @@ func showImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte(`<html>
-					<head><title>Node Exporter</title></head>
+					<head><title>kua mei a</title></head>
 					<body>
-					<img src=\"` + url + `\"/>
+					<img src="` + url + `"/>
 					</body>
 					</html>`))
 }
