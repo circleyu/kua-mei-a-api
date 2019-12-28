@@ -52,19 +52,25 @@ func getImageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(url))
 }
 
+func showImageHandler(w http.ResponseWriter, r *http.Request) {
+	url, err := getRandomImageURL()
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Write([]byte("<img src=\"" + url + "\"/>"))
+}
+
 func crawlerHandler(w http.ResponseWriter, r *http.Request) {
 	startDailyBeautyCrawler()
 	w.Write([]byte(`Crawler successfully`))
 }
 
-func homePageHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`Hello, World!`))
-}
-
 func main() {
 	http.HandleFunc("/crawler", crawlerHandler)
 	http.HandleFunc("/image", getImageHandler)
-	http.HandleFunc("/", homePageHandler)
+	http.HandleFunc("/", showImageHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
