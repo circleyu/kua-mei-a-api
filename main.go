@@ -60,6 +60,21 @@ func showImageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte(`<html>
 					<head><title>kua mei a</title></head>
+					<style type="text/css">
+					body {
+						margin: 0;
+						padding: 0;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						height: 100vh;
+						width: 100%;
+					}
+					img {
+						height: 100vh;
+						width: auto;
+					}
+					</style>
 					<body>
 					<img src="` + url + `"/>
 					</body>
