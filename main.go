@@ -58,8 +58,12 @@ func showImageHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
-	w.Write([]byte("<img src=\"" + url + "\"/>"))
+	w.Write([]byte(`<html>
+					<head><title>Node Exporter</title></head>
+					<body>
+					<img src=\"` + url + `\"/>
+					</body>
+					</html>`))
 }
 
 func crawlerHandler(w http.ResponseWriter, r *http.Request) {
